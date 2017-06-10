@@ -1,0 +1,4 @@
+rootProject.name = 'ep-user-manager'
+include 'domain'
+include 'web'
+
