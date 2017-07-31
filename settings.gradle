@@ -1,4 +1,4 @@
-rootProject.name = 'ep-user-manager'
+rootProject.name = 'ep-storage-manager'
 include 'domain'
 include 'web'
 
