@@ -33,7 +33,7 @@
 
     <!-- 扫描本项目 -->
 
-    <context:component-scan base-package="com.ep.cms.web.controller">
+    <context:component-scan base-package="com.ep.storage.web.controller">
 
         <context:include-filter type="annotation"
 
