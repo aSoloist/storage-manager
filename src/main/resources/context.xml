@@ -127,7 +127,7 @@
 
                 <value>com.ep.commons.domain.model</value>
 
-                <value>com.ep.cms.domain.model</value>
+                <value>com.ep.storage.domain.model</value>
 
             </list>
 
