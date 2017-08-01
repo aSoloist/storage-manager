@@ -45,7 +45,7 @@
 
     <!-- 扫描本项目 -->
 
-    <context:component-scan base-package="com.ep.cms.domain.dao">
+    <context:component-scan base-package="com.ep.storage.domain.dao">
 
         <context:exclude-filter type="annotation"
 
@@ -54,7 +54,7 @@
     </context:component-scan>
 
 
-    <context:component-scan base-package="com.ep.cms.domain.service">
+    <context:component-scan base-package="com.ep.storage.domain.service">
 
         <context:exclude-filter type="annotation"
 
