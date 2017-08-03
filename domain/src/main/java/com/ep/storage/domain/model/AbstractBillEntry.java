@@ -5,6 +5,7 @@ import com.ep.commons.domain.model.AbstractModel;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 单据分录基类
@@ -28,6 +29,13 @@ public class AbstractBillEntry extends AbstractModel {
 
     @Transient
     private String goodsName;
+
+    private Integer status = Integer.valueOf(0); //状态
+
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "create_time")
+    private Date createTime = new Date();
+
 
     public Goods getGoods() {
         return goods;
@@ -77,5 +85,21 @@ public class AbstractBillEntry extends AbstractModel {
 
     public void setGoodsName(String goodsName) {
         this.goodsName = goodsName;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }
