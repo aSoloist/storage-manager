@@ -114,12 +114,21 @@ public class PurchaseBillService {
     }
 
     /**
-     * 新增或者修改
+     * 新增或者修改采购单
      *
      * @param purchase
      */
     public void saveOrUpdate(PurchaseBill purchase) {
         this.purchaseBillDao.saveOrUpdate(purchase);
+    }
+
+    /**
+     * 新增或者修改分录
+     *
+     * @param purchaseBillEntry
+     */
+    public void saveOrUpdateEntry(PurchaseBillEntry purchaseBillEntry) {
+        this.purchaseBillEntryDao.saveOrUpdate(purchaseBillEntry);
     }
 
     /**

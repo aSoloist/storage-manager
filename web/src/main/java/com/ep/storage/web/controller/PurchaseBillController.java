@@ -166,6 +166,16 @@ public class PurchaseBillController extends BaseController {
     }
 
     /**
+     * 保存分录
+     *
+     * @param purchaseBillEntry
+     */
+    @RequestMapping(value = "/saveEntry", method = RequestMethod.POST)
+    public void saveEntry(@RequestBody PurchaseBillEntry purchaseBillEntry){
+        purchaseBillService.saveOrUpdateEntry(purchaseBillEntry);
+    }
+
+    /**
      * 状态修改
      *
      * @param id
