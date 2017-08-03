@@ -27,9 +27,8 @@ public class PurchaseBillDao extends BaseDao<PurchaseBill, String> {
      * @param creatorId
      * @param status
      * @param purchaseSn
-     * @param purchaseEntryId
      */
-    public HqlArgs getHqlArgs(List<String> organId, List<String> creatorId, List<Integer> status, List<String> purchaseSn, List<String> purchaseEntryId){
+    public HqlArgs getHqlArgs(List<String> organId, List<String> creatorId, List<Integer> status, List<String> purchaseSn){
         String hql = "from PurchaseBill where 1=1";
         Map<String, Object> map = new HashMap<>();
         if (organId != null && organId.size() > 0){
@@ -73,16 +72,6 @@ public class PurchaseBillDao extends BaseDao<PurchaseBill, String> {
                 map.put("purchaseSn", purchaseSn);
             }
         }
-
-        if (purchaseEntryId != null && purchaseEntryId.size() > 0){
-            if (purchaseEntryId.size() ==1){
-                hql += " and id = (select purchase.id from purchaseBillEntry where purchaseBillEntry.id = :purchaseEntryId)";
-                map.put("purchaseEntryId", purchaseEntryId.get(0));
-            } else {
-                hql += " and id in (select purchase.id from purchaseBillEntry where purchaseBillEntry.id in :purchaseEntryId)";
-                map.put("purchaseEntryId", purchaseEntryId);
-            }
-        }
         return new HqlArgs(hql, map);
     }
 
@@ -96,7 +85,7 @@ public class PurchaseBillDao extends BaseDao<PurchaseBill, String> {
      * @return
      */
     public List<PurchaseBill> getPurchase(List<String> organId, List<Integer> status, Integer startIndex, Integer rows){
-        HqlArgs hqlArgs = getHqlArgs(organId, null, status, null, null);
+        HqlArgs hqlArgs = getHqlArgs(organId, null, status, null);
         String hql = hqlArgs.getHql();
         hql += " order by createTime desc";
         List<PurchaseBill> list = findByNamedParam(hql, startIndex, rows, hqlArgs.getArgs());
@@ -111,7 +100,7 @@ public class PurchaseBillDao extends BaseDao<PurchaseBill, String> {
      * @return
      */
     public Integer getPurchaseCount(List<String> organId, List<Integer> status){
-        HqlArgs hqlArgs = getHqlArgs(organId, null, status, null, null);
+        HqlArgs hqlArgs = getHqlArgs(organId, null, status, null);
         return (int) getCount(hqlArgs.getHql(), hqlArgs.getArgs());
     }
 
@@ -122,11 +111,10 @@ public class PurchaseBillDao extends BaseDao<PurchaseBill, String> {
      * @param creatorId
      * @param status
      * @param purchaseSn
-     * @param purchaseEntryId
      * @return
      */
-    public List<PurchaseBill> getPurchaseBy(List<String> organId, List<String> creatorId, List<Integer> status, List<String> purchaseSn, List<String> purchaseEntryId){
-        HqlArgs hqlArgs = getHqlArgs(organId, creatorId, status, purchaseSn, purchaseEntryId);
+    public List<PurchaseBill> getPurchaseBy(List<String> organId, List<String> creatorId, List<Integer> status, List<String> purchaseSn){
+        HqlArgs hqlArgs = getHqlArgs(organId, creatorId, status, purchaseSn);
         String hql = hqlArgs.getHql();
         hql += " order by createTime desc";
         List<PurchaseBill> list = findByNamedParam(hql, hqlArgs.getArgs());
@@ -140,11 +128,10 @@ public class PurchaseBillDao extends BaseDao<PurchaseBill, String> {
      * @param creatorId
      * @param status
      * @param purchaseSn
-     * @param purchaseEntryId
      * @return
      */
-    public Integer getCountBy(List<String> organId, List<String> creatorId, List<Integer> status, List<String> purchaseSn, List<String> purchaseEntryId) {
-        HqlArgs hqlArgs = getHqlArgs(organId, creatorId, status, purchaseSn, purchaseEntryId);
+    public Integer getCountBy(List<String> organId, List<String> creatorId, List<Integer> status, List<String> purchaseSn) {
+        HqlArgs hqlArgs = getHqlArgs(organId, creatorId, status, purchaseSn);
         return (int) getCount(hqlArgs.getHql(), hqlArgs.getArgs());
     }
 

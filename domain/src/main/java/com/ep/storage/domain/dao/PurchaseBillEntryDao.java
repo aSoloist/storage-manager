@@ -3,11 +3,13 @@ package com.ep.storage.domain.dao;
 import com.ep.commons.domain.dao.BaseDao;
 import com.ep.commons.domain.model.HqlArgs;
 import com.ep.storage.domain.model.PurchaseBillEntry;
+import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public class PurchaseBillEntryDao extends BaseDao<PurchaseBillEntry, String>{
 
     /**

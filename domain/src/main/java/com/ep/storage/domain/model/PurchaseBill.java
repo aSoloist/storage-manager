@@ -19,6 +19,16 @@ public class PurchaseBill extends AbstractBill {
     @Cascade(value = {org.hibernate.annotations.CascadeType.ALL})
     private Set<PurchaseBillEntry> billEntries;//采购分录
 
+    private String remark;//备注
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     public Set<PurchaseBillEntry> getBillEntries() {
         return billEntries;
     }

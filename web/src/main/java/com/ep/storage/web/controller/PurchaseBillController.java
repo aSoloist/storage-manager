@@ -3,6 +3,7 @@ package com.ep.storage.web.controller;
 import com.ep.commons.domain.model.Pagination;
 import com.ep.commons.web.controller.BaseController;
 import com.ep.storage.domain.model.PurchaseBill;
+import com.ep.storage.domain.model.PurchaseBillEntry;
 import com.ep.storage.domain.service.PurchaseBillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -57,16 +58,14 @@ public class PurchaseBillController extends BaseController {
      * @param creatorId
      * @param status
      * @param purchaseSn
-     * @param purchaseEntryId
      * @return
      */
     @RequestMapping(value = "/getPurchaseBy", method = RequestMethod.GET)
     public List<PurchaseBill> getPurchaseBy(@RequestParam(required = false) List<String> organId,
                                             @RequestParam(required = false) List<String> creatorId,
                                             @RequestParam(required = false) List<Integer> status,
-                                            @RequestParam(required = false) List<String> purchaseSn,
-                                            @RequestParam(required = false) List<String> purchaseEntryId){
-        return purchaseBillService.getPurchaseBy(organId, creatorId, status, purchaseSn, purchaseEntryId);
+                                            @RequestParam(required = false) List<String> purchaseSn){
+        return purchaseBillService.getPurchaseBy(organId, creatorId, status, purchaseSn);
     }
 
     /**
@@ -76,16 +75,70 @@ public class PurchaseBillController extends BaseController {
      * @param creatorId
      * @param status
      * @param purchaseSn
-     * @param purchaseEntryId
      * @return
      */
     @RequestMapping(value = "/getCountBy", method = RequestMethod.GET)
     public Integer getCountBy(@RequestParam(required = false) List<String> organId,
                               @RequestParam(required = false) List<String> creatorId,
                               @RequestParam(required = false) List<Integer> status,
-                              @RequestParam(required = false) List<String> purchaseSn,
-                              @RequestParam(required = false) List<String> purchaseEntryId){
-        return purchaseBillService.getCountBy(organId, creatorId, status, purchaseSn, purchaseEntryId);
+                              @RequestParam(required = false) List<String> purchaseSn){
+        return purchaseBillService.getCountBy(organId, creatorId, status, purchaseSn);
+    }
+
+    /**
+     * 获取单据下所有分录
+     *
+     * @param status
+     * @param purchaseSn
+     */
+    @RequestMapping(value = "/getEntry", method = RequestMethod.GET)
+    public List<PurchaseBillEntry> getEntryAll(@RequestParam(required = false) List<Integer> status,
+                                               @RequestParam(required = true) List<String> purchaseSn){
+        return purchaseBillService.getEntryAll(status, purchaseSn);
+    }
+
+    /**
+     * 获取单据下所有分录数量
+     *
+     * @param status
+     * @param purchaseSn
+     */
+    @RequestMapping(value = "/getEntryCount", method = RequestMethod.GET)
+    public Integer getEntryCount(@RequestParam(required = false) List<Integer> status,
+                                 @RequestParam(required = true) List<String> purchaseSn){
+        return purchaseBillService.getEntryCount(status, purchaseSn);
+    }
+
+    /**
+     * 条件获取分录
+     *
+     * @param goodsId
+     * @param goodsName
+     * @param status
+     * @param purchaseSn
+     */
+    @RequestMapping(value = "/getEntryBy", method = RequestMethod.GET)
+    public List<PurchaseBillEntry> getEntryBy(@RequestParam(required = false) List<String> goodsId,
+                                              @RequestParam(required = false) List<String> goodsName,
+                                              @RequestParam(required = false) List<Integer> status,
+                                              @RequestParam(required = false) List<String> purchaseSn){
+        return purchaseBillService.getEntryBy(goodsId, goodsName, status, purchaseSn);
+    }
+
+    /**
+     * 获取单据下所有分录数量
+     *
+     * @param goodsId
+     * @param goodsName
+     * @param status
+     * @param purchaseSn
+     */
+    @RequestMapping(value = "/getEntryByCount", method = RequestMethod.GET)
+    public Integer getEntryCount(@RequestParam(required = false) List<String> goodsId,
+                                 @RequestParam(required = false) List<String> goodsName,
+                                 @RequestParam(required = false) List<Integer> status,
+                                 @RequestParam(required = false) List<String> purchaseSn){
+        return purchaseBillService.getEntryByCount(goodsId, goodsName, status, purchaseSn);
     }
 
     /**
