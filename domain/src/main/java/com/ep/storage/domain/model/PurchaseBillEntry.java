@@ -1,7 +1,5 @@
 package com.ep.storage.domain.model;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -18,9 +16,8 @@ public class PurchaseBillEntry extends AbstractBillEntry {
     @Column(name = "price", nullable = false)
     private BigDecimal price;//单价
 
-    @JSONField(serialize = false)
     @ManyToOne
-    @JoinColumn(name = "purchase_id", nullable = false)
+    @JoinColumn(name = "purchase_id")
     private PurchaseBill purchase;//采购单
 
     @Transient

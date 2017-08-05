@@ -4,6 +4,7 @@ import com.ep.commons.domain.service.IService;
 import com.ep.storage.domain.dao.StorageBillDao;
 import com.ep.storage.domain.dao.StorageBillEntryDao;
 import com.ep.storage.domain.model.StorageBill;
+import com.ep.storage.domain.model.StorageBillEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ import java.util.List;
 /**
  * 出入库单服务类
  *
- * @author 文卡<wkwenka@gmail.com>  on 17-8-3.
+ * Created by ly on 17-8-5
  */
 @Service
 public class StorageBillService implements IService<StorageBill, String> {
@@ -23,19 +24,32 @@ public class StorageBillService implements IService<StorageBill, String> {
     @Autowired
     private StorageBillEntryDao storageBillEntryDao;
 
-    @Override
+    /**
+     * 保存或修改出入单
+     *
+     * @param storageBill
+     */
     public void saveOrUpdate(StorageBill storageBill) {
-
+        this.storageBillDao.saveOrUpdate(storageBill);
     }
 
-    @Override
+    /**
+     * 删除单据
+     *
+     * @param id
+     */
     public void delete(String id) {
-
+        this.storageBillDao.updateStatus(id, Integer.valueOf(-1));
     }
 
-    @Override
-    public StorageBill get(String s) {
-        return null;
+    /**
+     * 获取单个单据
+     *
+     * @param id
+     * @return
+     */
+    public StorageBill get(String id) {
+        return storageBillDao.get(id);
     }
 
     @Override
@@ -43,8 +57,119 @@ public class StorageBillService implements IService<StorageBill, String> {
         return null;
     }
 
+    /**
+     * 获取出入单分页
+     *
+     * @param organId
+     * @param status
+     * @param direction
+     * @param startIndex
+     * @param rows
+     * @return
+     */
+    public List<StorageBill> getList(List<String> organId, List<Integer> status, StorageBill.Direction direction, Integer startIndex, Integer rows){
+        return storageBillDao.getAll(organId, status, direction, startIndex, rows);
+    }
+
     @Override
     public long listSize(String param, List<String> organIds, List<String> userIds, List<Integer> status) {
         return 0;
+    }
+
+    /**
+     * 获取单据数量
+     *
+     * @param organId
+     * @param status
+     * @param direction
+     * @return
+     */
+    public Integer getListSize(List<String> organId, List<Integer> status, StorageBill.Direction direction){
+        return storageBillDao.getCount(organId, status, direction);
+    }
+
+    /**
+     * 条件获取出入单
+     *
+     * @param organId
+     * @param creatorId
+     * @param direction
+     * @param status
+     * @param storageSn
+     * @return
+     */
+    public List<StorageBill> getListBy(List<String> organId, List<String> creatorId, StorageBill.Direction direction, List<Integer> status, List<String> storageSn){
+        return storageBillDao.getListBy(organId, creatorId, direction, status, storageSn);
+    }
+
+    /**
+     * 条件获取出入单数量
+     *
+     * @param organId
+     * @param creatorId
+     * @param direction
+     * @param status
+     * @param storageSn
+     * @return
+     */
+    public Integer getListSizeBy(List<String> organId, List<String> creatorId, StorageBill.Direction direction, List<Integer> status, List<String> storageSn) {
+        return storageBillDao.getCountBy(organId, creatorId, direction, status, storageSn);
+    }
+
+    /**
+     * 获取单据下所有分录
+     *
+     * @param status
+     * @param ownerSn
+     * @return
+     */
+    public List<StorageBillEntry> getEntryList(List<Integer> status, List<String> ownerSn){
+        return storageBillEntryDao.getAll(status, ownerSn);
+    }
+
+    /**
+     * 获取单据下分录数量
+     *
+     * @param status
+     * @param ownerSn
+     * @return
+     */
+    public Integer getEntryCount(List<Integer> status, List<String> ownerSn){
+        return storageBillEntryDao.getCount(status, ownerSn);
+    }
+
+    /**
+     * 条件获取分录
+     *
+     * @param goodsId
+     * @param goodsName
+     * @param status
+     * @param ownerSn
+     * @return
+     */
+    public List<StorageBillEntry> getEntryListBy(List<String> goodsId, List<String> goodsName, List<Integer> status, List<String> ownerSn){
+        return storageBillEntryDao.getListBy(goodsId, goodsName, status, ownerSn);
+    }
+
+    /**
+     * 条件获取分录数量
+     *
+     * @param goodsId
+     * @param goodsName
+     * @param status
+     * @param ownerSn
+     * @return
+     */
+    public Integer getEntryCountBy(List<String> goodsId, List<String> goodsName, List<Integer> status, List<String> ownerSn){
+        return storageBillEntryDao.getCountBy(goodsId, goodsName, status, ownerSn);
+    }
+
+    /**
+     * 保存或者修改出入单分录
+     *
+     * @param storageBillEntry
+     */
+    public void saveOrUpdateEntry(StorageBillEntry storageBillEntry){
+        storageBillEntryDao.saveOrUpdate(storageBillEntry);
     }
 }
