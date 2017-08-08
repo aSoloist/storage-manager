@@ -19,6 +19,10 @@ public class StorageBill extends AbstractBill {
     @Column(nullable = false, updatable = false)
     private Direction direction;  // IN: 入库  OUT:出库
 
+    @OneToOne
+    @JoinColumn(name = "purchase_id")
+    private PurchaseBill purchaseBill;//采购单
+
     private String remark; //备注
 
     public Direction getDirection() {
@@ -35,5 +39,13 @@ public class StorageBill extends AbstractBill {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public PurchaseBill getPurchaseBill() {
+        return purchaseBill;
+    }
+
+    public void setPurchaseBill(PurchaseBill purchaseBill) {
+        this.purchaseBill = purchaseBill;
     }
 }

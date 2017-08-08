@@ -1,13 +1,18 @@
 package com.ep.storage.web.controller;
 
 import com.ep.commons.domain.model.Pagination;
+import com.ep.commons.domain.service.SnSerice;
 import com.ep.commons.web.controller.BaseController;
 import com.ep.storage.domain.model.PurchaseBill;
 import com.ep.storage.domain.model.PurchaseBillEntry;
+import com.ep.storage.domain.model.StorageBill;
+import com.ep.storage.domain.model.StorageBillEntry;
 import com.ep.storage.domain.service.PurchaseBillService;
+import com.ep.storage.domain.service.StorageBillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -16,6 +21,12 @@ public class PurchaseBillController extends BaseController {
 
     @Autowired
     PurchaseBillService purchaseBillService;
+
+    @Autowired
+    StorageBillService storageBillService;
+
+    @Autowired
+    SnSerice snSerice;
 
     /**
      * 查询采购单(分页)
@@ -126,7 +137,7 @@ public class PurchaseBillController extends BaseController {
     }
 
     /**
-     * 获取单据下所有分录数量
+     * 条件获取单据下分录数量
      *
      * @param goodsId
      * @param goodsName
@@ -159,7 +170,7 @@ public class PurchaseBillController extends BaseController {
      */
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
     public void saveOrUpdate(@RequestBody PurchaseBill purchaseBill) {
-
+        purchaseBill.setSn(snSerice.gen("CGD", this.primaryOrganId));
         purchaseBill.setCreator(this.currentUser);
         purchaseBill.setOrgan(this.primaryOrgan);
         purchaseBillService.saveOrUpdate(purchaseBill);
@@ -179,11 +190,35 @@ public class PurchaseBillController extends BaseController {
      * 状态修改
      *
      * @param id
-     * @param status
+     * @param status    -1 删除； 0 待采购； 1 已采购  状态为1时自动生成入库单
      */
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     public void updateStatus(@RequestParam String id,
                              @RequestParam Integer status) {
         purchaseBillService.updateStatus(id, status);
+
+        if (status == 1){
+            PurchaseBill purchaseBill = purchaseBillService.getOne(id);
+            List<String> sn = new ArrayList<>();
+            sn.add(purchaseBill.getSn());
+            List<PurchaseBillEntry> list = purchaseBillService.getEntryBy(null, null, null, sn);
+            StorageBill storageBill = new StorageBill();
+            storageBill.setDirection(StorageBill.Direction.IN);
+            storageBill.setCreator(this.currentUser);
+            storageBill.setOrgan(this.primaryOrgan);
+            storageBill.setSn(snSerice.gen("RKD", this.primaryOrganId));
+            storageBill.setPurchaseBill(purchaseBill);
+            storageBillService.saveOrUpdate(storageBill);
+            for (PurchaseBillEntry p : list){
+                StorageBillEntry storageBillEntry = new StorageBillEntry();
+                storageBillEntry.setOwner(storageBill);
+                storageBillEntry.setGoods(p.getGoods());
+                storageBillEntry.setQuantity(p.getQuantity());
+                storageBillService.saveOrUpdateEntry(storageBillEntry);
+            }
+            
+        }
     }
 }
+
+
