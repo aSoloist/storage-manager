@@ -1,6 +1,7 @@
 package com.ep.storage.web.controller;
 
 import com.ep.commons.domain.model.Pagination;
+import com.ep.commons.web.controller.BaseController;
 import com.ep.storage.domain.model.Stocks;
 import com.ep.storage.domain.service.StocksService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/stocks")
-public class StocksController {
+public class StocksController extends BaseController{
     @Autowired
     StocksService stocksService;
 
@@ -108,6 +109,8 @@ public class StocksController {
      */
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
     public void saveOrUpdate(@RequestBody Stocks stocks){
+        stocks.setOwner(this.currentUser);
+        stocks.setOrgan(this.primaryOrgan);
         stocksService.saveOrUpdate(stocks);
     }
 

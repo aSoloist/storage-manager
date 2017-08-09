@@ -16,7 +16,7 @@ public class StorageBillEntry extends AbstractBillEntry {
     private StorageBill owner;
 
     @Transient
-    private String sn; //所属单号
+    private String ownerSn; //所属单号
 
     @Transient
     private String ownerId; //单据Id
@@ -29,21 +29,21 @@ public class StorageBillEntry extends AbstractBillEntry {
         this.owner = owner;
     }
 
-    public String getSn() {
+    public String getOwnerSn() {
 
-        if (this.sn != null) {
-            return this.sn;
+        if (this.ownerSn != null) {
+            return this.ownerSn;
         }
 
         if (this.owner != null) {
             return this.owner.getSn();
         }
 
-        return sn;
+        return ownerSn;
     }
 
-    public void setSn(String sn) {
-        this.sn = sn;
+    public void setOwnerSn(String ownerSn) {
+        this.ownerSn = ownerSn;
     }
 
     public String getOwnerId() {

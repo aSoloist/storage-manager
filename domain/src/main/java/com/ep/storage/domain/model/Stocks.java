@@ -56,6 +56,7 @@ public class Stocks extends AbstractVersionModel{
     @ManyToOne
     @JoinColumn(name = "goods_id")
     @JSONField(serialize = false)
+    @NotFound(action = NotFoundAction.IGNORE)
     private Goods goods; // 商品
 
     @Transient
