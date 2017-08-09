@@ -1,6 +1,7 @@
 package com.ep.storage.web.controller;
 
 import com.ep.commons.domain.model.Pagination;
+import com.ep.commons.domain.service.SnSerice;
 import com.ep.commons.tool.util.StringToEnumConverterFactory;
 import com.ep.commons.web.controller.BaseController;
 import com.ep.storage.domain.model.StorageBill;
@@ -17,6 +18,9 @@ public class StorageBillController extends BaseController{
 
     @Autowired
     StorageBillService storageBillService;
+
+    @Autowired
+    SnSerice snSerice;
 
     /**
      * 获取出入单据分页
@@ -189,7 +193,7 @@ public class StorageBillController extends BaseController{
      */
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
     public void saveOrUpdate(@RequestBody StorageBill storageBill) {
-
+        storageBill.setSn(snSerice.gen("RKD", this.primaryOrganId));
         storageBill.setCreator(this.currentUser);
         storageBill.setOrgan(this.primaryOrgan);
         storageBillService.saveOrUpdate(storageBill);
@@ -210,8 +214,9 @@ public class StorageBillController extends BaseController{
      *
      * @param id
      */
-    @RequestMapping(value = "/delete", method = RequestMethod.POST)
-    public void updateStatus(@RequestParam String id) {
-        storageBillService.delete(id);
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public void updateStatus(@RequestParam String id,
+                             @RequestParam Integer status) {
+        storageBillService.update(id, status);
     }
 }

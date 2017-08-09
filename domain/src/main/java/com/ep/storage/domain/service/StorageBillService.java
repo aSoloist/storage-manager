@@ -1,13 +1,17 @@
 package com.ep.storage.domain.service;
 
 import com.ep.commons.domain.service.IService;
+import com.ep.storage.domain.dao.StocksDao;
 import com.ep.storage.domain.dao.StorageBillDao;
 import com.ep.storage.domain.dao.StorageBillEntryDao;
+import com.ep.storage.domain.model.Stocks;
 import com.ep.storage.domain.model.StorageBill;
 import com.ep.storage.domain.model.StorageBillEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,6 +28,9 @@ public class StorageBillService implements IService<StorageBill, String> {
     @Autowired
     private StorageBillEntryDao storageBillEntryDao;
 
+    @Autowired
+    private StocksDao stocksDao;
+
     /**
      * 保存或修改出入单
      *
@@ -33,13 +40,41 @@ public class StorageBillService implements IService<StorageBill, String> {
         this.storageBillDao.saveOrUpdate(storageBill);
     }
 
+    public void delete(String s) { }
+
     /**
-     * 删除单据
+     * 状态修改
      *
      * @param id
      */
-    public void delete(String id) {
-        this.storageBillDao.updateStatus(id, Integer.valueOf(-1));
+    public void update(String id, Integer status) {
+        this.storageBillDao.updateStatus(id, status);
+
+        if (status == 1){
+            StorageBill storageBill = storageBillDao.get(id);
+            List<String> sn = new ArrayList<>();
+            sn.add(storageBill.getSn());
+            List<StorageBillEntry> list = storageBillEntryDao.getListBy(null, null, null, sn);
+            if (storageBill.getDirection().equals(StorageBill.Direction.IN)){
+                for (StorageBillEntry entry : list){
+                    Stocks stocks = stocksDao.getOne(storageBill.getCreatorId(), entry.getGoodsId());
+                    BigDecimal inventoryQuantity = stocks.getInventoryQuantity();
+                    BigDecimal transitQuantity = stocks.getTransitQuantity();
+                    stocks.setInventoryQuantity(inventoryQuantity.add(entry.getQuantity()));
+                    stocks.setTransitQuantity(transitQuantity.subtract(entry.getQuantity()));
+                    stocksDao.saveOrUpdate(stocks);
+                }
+            } else if (storageBill.getDirection().equals(StorageBill.Direction.OUT)){
+                for (StorageBillEntry entry : list){
+                    Stocks stocks = stocksDao.getOne(storageBill.getCreatorId(), entry.getGoodsId());
+                    BigDecimal inventoryQuantity = stocks.getInventoryQuantity();
+                    BigDecimal frozenQuantity = stocks.getFrozenQuantity();
+                    stocks.setInventoryQuantity(inventoryQuantity.subtract(entry.getQuantity()));
+                    stocks.setFrozenQuantity(frozenQuantity.subtract(entry.getQuantity()));
+                    stocksDao.saveOrUpdate(stocks);
+                }
+            }
+        }
     }
 
     /**
@@ -171,5 +206,13 @@ public class StorageBillService implements IService<StorageBill, String> {
      */
     public void saveOrUpdateEntry(StorageBillEntry storageBillEntry){
         storageBillEntryDao.saveOrUpdate(storageBillEntry);
+
+        StorageBill storageBill = storageBillDao.get(storageBillEntry.getOwnerId());
+        if (storageBill.getDirection().equals(StorageBill.Direction.OUT)){
+            Stocks stocks = stocksDao.getOne(storageBill.getCreatorId(), storageBillEntry.getGoodsId());
+            BigDecimal frozenQuantity = stocks.getFrozenQuantity();
+            stocks.setFrozenQuantity(frozenQuantity.add(storageBillEntry.getQuantity()));
+            stocksDao.saveOrUpdate(stocks);
+        }
     }
 }

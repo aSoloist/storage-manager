@@ -1,17 +1,12 @@
 package com.ep.storage.domain.service;
 
 import com.ep.commons.domain.dao.SNDao;
-import com.ep.storage.domain.dao.PurchaseBillDao;
-import com.ep.storage.domain.dao.PurchaseBillEntryDao;
-import com.ep.storage.domain.dao.StorageBillDao;
-import com.ep.storage.domain.dao.StorageBillEntryDao;
-import com.ep.storage.domain.model.PurchaseBill;
-import com.ep.storage.domain.model.PurchaseBillEntry;
-import com.ep.storage.domain.model.StorageBill;
-import com.ep.storage.domain.model.StorageBillEntry;
+import com.ep.storage.domain.dao.*;
+import com.ep.storage.domain.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +26,9 @@ public class PurchaseBillService {
 
     @Autowired
     private SNDao snDao;
+
+    @Autowired
+    private StocksDao stocksDao;
 
     /**
      * 查询采购单(分页)
@@ -160,13 +158,34 @@ public class PurchaseBillService {
      * 状态修改
      *
      * @param id
-     * @param status   -1 删除； 0 待采购； 1 已采购  状态为1时自动生成入库单
+     * @param status   -1 删除；0 暂存； 1 待采购； 2 已采购  状态为2时自动生成入库单
      */
     public void updateStatus(String id, Integer status) {
 
         purchaseBillDao.updateStatus(id, status);
 
-        if (status == 1){
+        if (status == 1) {
+            PurchaseBill purchase = purchaseBillDao.get(id);
+            List<String> sn = new ArrayList<>();
+            sn.add(purchase.getSn());
+            List<PurchaseBillEntry> list = purchaseBillEntryDao.getEntryBy(null, null, null, sn);
+            for (PurchaseBillEntry entry : list) {
+                Stocks stocks = stocksDao.getOne(purchase.getCreatorId(), entry.getGoodsId());
+                if (stocks != null) {
+                    BigDecimal count = stocks.getTransitQuantity();
+                    stocks.setTransitQuantity(count.add(entry.getQuantity()));
+                } else {
+                    Stocks newStocks = new Stocks();
+                    newStocks.setGoods(entry.getGoods());
+                    newStocks.setTransitQuantity(entry.getQuantity());
+                    newStocks.setOrgan(purchase.getOrgan());
+                    newStocks.setOwner(purchase.getCreator());
+                    stocksDao.saveOrUpdate(newStocks);
+                }
+            }
+        }
+
+        if (status == 2){
             PurchaseBill purchaseBill = purchaseBillDao.get(id);
             List<String> sn = new ArrayList<>();
             sn.add(purchaseBill.getSn());
