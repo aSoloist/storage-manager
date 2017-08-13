@@ -5,6 +5,7 @@ import com.ep.storage.domain.model.Stocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -44,10 +45,21 @@ public class StocksService {
      * @param status
      * @param goodsId
      * @param goodsName
+     * @param beginTime
+     * @param endTime
+     * @param function
      * @return
      */
-    public List<Stocks> getListBy(List<String> ownerId, List<String> organId, List<Integer> status, List<String> goodsId, List<String> goodsName){
-        return stocksDao.getListBy(ownerId, organId, status, goodsId, goodsName);
+    public List<Stocks> getListBy(List<String> ownerId, List<String> organId, List<Integer> status, List<String> goodsId, List<String> goodsName, Date beginTime, Date endTime, StocksDao.Function function){
+        if (function.equals(StocksDao.Function.Info)){
+            return stocksDao.getStocksInfo(ownerId, organId, status, goodsId, goodsName);
+        } else if (function.equals(StocksDao.Function.Record)){
+            return stocksDao.getListBy(ownerId, organId, status, goodsId, goodsName, beginTime, endTime);
+        } else if (function.equals(StocksDao.Function.State)){
+            return stocksDao.getReportForm(ownerId, organId, status, goodsId, goodsName, beginTime, endTime);
+        }
+
+        return stocksDao.getStocksInfo(ownerId, organId, status, goodsId, goodsName);
     }
 
     /**
@@ -58,10 +70,18 @@ public class StocksService {
      * @param status
      * @param goodsId
      * @param goodsName
+     * @param beginTime
+     * @param endTime
      * @return
      */
-    public Integer getCountBy(List<String> ownerId, List<String> organId, List<Integer> status, List<String> goodsId, List<String> goodsName){
-        return stocksDao.getListCount(ownerId, organId, status, goodsId, goodsName);
+    public Integer getCountBy(List<String> ownerId, List<String> organId, List<Integer> status, List<String> goodsId, List<String> goodsName, Date beginTime, Date endTime, StocksDao.Function function){
+        if (function.equals(StocksDao.Function.Record)){
+            return stocksDao.getListCount(ownerId, organId, status, goodsId, goodsName, beginTime, endTime);
+        } else if(function.equals(StocksDao.Function.Info)){
+            return stocksDao.getStocksCount(ownerId, organId, status, goodsId, goodsName);
+        }
+
+        return stocksDao.getStocksCount(ownerId, organId, status, goodsId, goodsName);
     }
 
     /**

@@ -6,7 +6,6 @@ import com.ep.storage.domain.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -170,18 +169,12 @@ public class PurchaseBillService {
             sn.add(purchase.getSn());
             List<PurchaseBillEntry> list = purchaseBillEntryDao.getEntryBy(null, null, null, sn);
             for (PurchaseBillEntry entry : list) {
-                Stocks stocks = stocksDao.getOne(purchase.getCreatorId(), entry.getGoodsId());
-                if (stocks != null) {
-                    BigDecimal count = stocks.getTransitQuantity();
-                    stocks.setTransitQuantity(count.add(entry.getQuantity()));
-                } else {
-                    Stocks newStocks = new Stocks();
-                    newStocks.setGoods(entry.getGoods());
-                    newStocks.setTransitQuantity(entry.getQuantity());
-                    newStocks.setOrgan(purchase.getOrgan());
-                    newStocks.setOwner(purchase.getCreator());
-                    stocksDao.saveOrUpdate(newStocks);
-                }
+                Stocks newStocks = new Stocks();
+                newStocks.setGoods(entry.getGoods());
+                newStocks.setTransitQuantity(entry.getQuantity());
+                newStocks.setOrgan(purchase.getOrgan());
+                newStocks.setOwner(purchase.getCreator());
+                stocksDao.saveOrUpdate(newStocks);
             }
         }
 

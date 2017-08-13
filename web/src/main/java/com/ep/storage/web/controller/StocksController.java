@@ -1,12 +1,17 @@
 package com.ep.storage.web.controller;
 
 import com.ep.commons.domain.model.Pagination;
+import com.ep.commons.tool.util.StringToEnumConverterFactory;
 import com.ep.commons.web.controller.BaseController;
+import com.ep.storage.domain.dao.StocksDao;
 import com.ep.storage.domain.model.Stocks;
 import com.ep.storage.domain.service.StocksService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -61,6 +66,9 @@ public class StocksController extends BaseController{
      * @param status
      * @param goodsId
      * @param goodsName
+     * @param beginTime
+     * @param endTime
+     * @param function
      * @return
      */
     @RequestMapping(value = "/getListBy", method = RequestMethod.GET)
@@ -68,8 +76,27 @@ public class StocksController extends BaseController{
                                   @RequestParam(required = false)List<String> organId,
                                   @RequestParam(required = false)List<Integer> status,
                                   @RequestParam(required = false)List<String> goodsId,
-                                  @RequestParam(required = false)List<String> goodsName){
-        return stocksService.getListBy(ownerId, organId, status, goodsId, goodsName);
+                                  @RequestParam(required = false)List<String> goodsName,
+                                  @RequestParam(required = false)String beginTime,
+                                  @RequestParam(required = false)String endTime,
+                                  @RequestParam(required = true)String function) throws ParseException {
+        Date begin = null;
+        Date end = null;
+        if (beginTime != null && !"".equals(beginTime)) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            begin = sdf.parse(beginTime);
+        }
+        if (endTime != null && !"".equals(endTime)) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            end = sdf.parse(endTime);
+        }
+
+        StocksDao.Function function1 = null;
+        if (function != null){
+            function1 = new StringToEnumConverterFactory().getConverter(StocksDao.Function.class).convert(function);
+        }
+
+        return stocksService.getListBy(ownerId, organId, status, goodsId, goodsName, begin, end, function1);
     }
 
     /**
@@ -80,6 +107,9 @@ public class StocksController extends BaseController{
      * @param status
      * @param goodsId
      * @param goodsName
+     * @param beginTime
+     * @param endTime
+     * @param function
      * @return
      */
     @RequestMapping(value = "/getCountBy", method = RequestMethod.GET)
@@ -87,8 +117,27 @@ public class StocksController extends BaseController{
                               @RequestParam(required = false)List<String> organId,
                               @RequestParam(required = false)List<Integer> status,
                               @RequestParam(required = false)List<String> goodsId,
-                              @RequestParam(required = false)List<String> goodsName){
-        return stocksService.getCountBy(ownerId, organId, status, goodsId, goodsName);
+                              @RequestParam(required = false)List<String> goodsName,
+                              @RequestParam(required = false)String beginTime,
+                              @RequestParam(required = false)String endTime,
+                              @RequestParam(required = true)String function) throws ParseException {
+        Date begin = null;
+        Date end = null;
+        if (beginTime != null && !"".equals(beginTime)) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            begin = sdf.parse(beginTime);
+        }
+        if (endTime != null && !"".equals(endTime)) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            end = sdf.parse(endTime);
+        }
+
+        StocksDao.Function function1 = null;
+        if (function != null){
+            function1 = new StringToEnumConverterFactory().getConverter(StocksDao.Function.class).convert(function);
+        }
+
+        return stocksService.getCountBy(ownerId, organId, status, goodsId, goodsName, begin, end, function1);
     }
 
     /**

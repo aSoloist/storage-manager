@@ -10,7 +10,6 @@ import com.ep.storage.domain.model.StorageBillEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,20 +56,22 @@ public class StorageBillService implements IService<StorageBill, String> {
             List<StorageBillEntry> list = storageBillEntryDao.getListBy(null, null, null, sn);
             if (storageBill.getDirection().equals(StorageBill.Direction.IN)){
                 for (StorageBillEntry entry : list){
-                    Stocks stocks = stocksDao.getOne(storageBill.getCreatorId(), entry.getGoodsId());
-                    BigDecimal inventoryQuantity = stocks.getInventoryQuantity();
-                    BigDecimal transitQuantity = stocks.getTransitQuantity();
-                    stocks.setInventoryQuantity(inventoryQuantity.add(entry.getQuantity()));
-                    stocks.setTransitQuantity(transitQuantity.subtract(entry.getQuantity()));
+                    Stocks stocks = new Stocks();
+                    stocks.setOwner(storageBill.getCreator());
+                    stocks.setOrgan(storageBill.getOrgan());
+                    stocks.setGoods(entry.getGoods());
+                    stocks.setTransitQuantity(entry.getQuantity().negate());
+                    stocks.setInventoryQuantity(entry.getQuantity());
                     stocksDao.saveOrUpdate(stocks);
                 }
             } else if (storageBill.getDirection().equals(StorageBill.Direction.OUT)){
                 for (StorageBillEntry entry : list){
-                    Stocks stocks = stocksDao.getOne(storageBill.getCreatorId(), entry.getGoodsId());
-                    BigDecimal inventoryQuantity = stocks.getInventoryQuantity();
-                    BigDecimal frozenQuantity = stocks.getFrozenQuantity();
-                    stocks.setInventoryQuantity(inventoryQuantity.subtract(entry.getQuantity()));
-                    stocks.setFrozenQuantity(frozenQuantity.subtract(entry.getQuantity()));
+                    Stocks stocks = new Stocks();
+                    stocks.setOwner(storageBill.getCreator());
+                    stocks.setOrgan(storageBill.getOrgan());
+                    stocks.setGoods(entry.getGoods());
+                    stocks.setFrozenQuantity(entry.getQuantity().negate());
+                    stocks.setInventoryQuantity(entry.getQuantity().negate());
                     stocksDao.saveOrUpdate(stocks);
                 }
             }
@@ -209,9 +210,11 @@ public class StorageBillService implements IService<StorageBill, String> {
 
         StorageBill storageBill = storageBillDao.get(storageBillEntry.getOwnerId());
         if (storageBill.getDirection().equals(StorageBill.Direction.OUT)){
-            Stocks stocks = stocksDao.getOne(storageBill.getCreatorId(), storageBillEntry.getGoodsId());
-            BigDecimal frozenQuantity = stocks.getFrozenQuantity();
-            stocks.setFrozenQuantity(frozenQuantity.add(storageBillEntry.getQuantity()));
+            Stocks stocks = new Stocks();
+            stocks.setOwner(storageBill.getCreator());
+            stocks.setOrgan(storageBill.getOrgan());
+            stocks.setGoods(storageBillEntry.getGoods());
+            stocks.setFrozenQuantity(storageBillEntry.getQuantity());
             stocksDao.saveOrUpdate(stocks);
         }
     }
