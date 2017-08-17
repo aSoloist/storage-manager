@@ -1,5 +1,6 @@
 package com.ep.storage.domain.service;
 
+import com.ep.annotation.ServiceLog;
 import com.ep.commons.domain.dao.SNDao;
 import com.ep.storage.domain.dao.*;
 import com.ep.storage.domain.model.*;
@@ -38,6 +39,7 @@ public class PurchaseBillService {
      * @param rows
      * @return
      */
+    @ServiceLog(description = "查询采购单(分页)")
     public List<PurchaseBill> getPurchase(List<String> organId, List<Integer> status, Integer startIndex, Integer rows){
         return purchaseBillDao.getPurchase(organId,  status, startIndex, rows);
     }
@@ -49,6 +51,7 @@ public class PurchaseBillService {
      * @param status
      * @return
      */
+    @ServiceLog(description = "查询采购单数量")
     public Integer getPurchaseCount(List<String> organId, List<Integer> status){
         return purchaseBillDao.getPurchaseCount(organId, status);
     }
@@ -62,6 +65,7 @@ public class PurchaseBillService {
      * @param purchaseSn
      * @return
      */
+    @ServiceLog(description = "条件查询采购单")
     public List<PurchaseBill> getPurchaseBy(List<String> organId, List<String> creatorId, List<Integer> status, List<String> purchaseSn){
         return purchaseBillDao.getPurchaseBy(organId, creatorId, status, purchaseSn);
     }
@@ -75,6 +79,7 @@ public class PurchaseBillService {
      * @param purchaseSn
      * @return
      */
+    @ServiceLog(description = "条件查询采购单数量")
     public Integer getCountBy(List<String> organId, List<String> creatorId, List<Integer> status, List<String> purchaseSn) {
         return purchaseBillDao.getCountBy(organId, creatorId, status, purchaseSn);
     }
@@ -85,6 +90,7 @@ public class PurchaseBillService {
      * @param status
      * @param purchaseSn
      */
+    @ServiceLog(description = "获取单据下所有分录")
     public List<PurchaseBillEntry> getEntryAll(List<Integer> status, List<String> purchaseSn){
         List<PurchaseBillEntry> list = purchaseBillEntryDao.getAll(status, purchaseSn);
         return list;
@@ -96,6 +102,7 @@ public class PurchaseBillService {
      * @param status
      * @param purchaseSn
      */
+    @ServiceLog(description = "获取单据下所有分录数量")
     public Integer getEntryCount(List<Integer> status, List<String> purchaseSn){
         return purchaseBillEntryDao.getCount(status, purchaseSn);
     }
@@ -108,6 +115,7 @@ public class PurchaseBillService {
      * @param status
      * @param purchaseSn
      */
+    @ServiceLog(description = "条件获取分录")
     public List<PurchaseBillEntry> getEntryBy(List<String> goodsId, List<String> goodsName, List<Integer> status, List<String> purchaseSn){
         List<PurchaseBillEntry> list = purchaseBillEntryDao.getEntryBy(goodsId, goodsName, status, purchaseSn);
         return list;
@@ -121,6 +129,7 @@ public class PurchaseBillService {
      * @param status
      * @param purchaseSn
      */
+    @ServiceLog(description = "条件获取分录数量")
     public Integer getEntryByCount(List<String> goodsId, List<String> goodsName, List<Integer> status, List<String> purchaseSn){
         return purchaseBillEntryDao.getEntryByCount(goodsId, goodsName, status, purchaseSn);
     }
@@ -130,6 +139,7 @@ public class PurchaseBillService {
      *
      * @param purchase
      */
+    @ServiceLog(description = "新增或者修改采购单")
     public void saveOrUpdate(PurchaseBill purchase) {
         this.purchaseBillDao.saveOrUpdate(purchase);
     }
@@ -139,6 +149,7 @@ public class PurchaseBillService {
      *
      * @param purchaseBillEntry
      */
+    @ServiceLog(description = "新增或者修改分录")
     public void saveOrUpdateEntry(PurchaseBillEntry purchaseBillEntry) {
         this.purchaseBillEntryDao.saveOrUpdate(purchaseBillEntry);
     }
@@ -149,6 +160,7 @@ public class PurchaseBillService {
      * @param id
      * @return
      */
+    @ServiceLog(description = "查找单个采购单")
     public PurchaseBill getOne(String id) {
         return purchaseBillDao.get(id);
     }
@@ -159,6 +171,7 @@ public class PurchaseBillService {
      * @param id
      * @param status   -1 删除；0 暂存； 1 待采购； 2 已采购  状态为2时自动生成入库单
      */
+    @ServiceLog(description = "状态修改")
     public void updateStatus(String id, Integer status) {
 
         purchaseBillDao.updateStatus(id, status);

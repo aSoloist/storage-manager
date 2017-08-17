@@ -1,5 +1,6 @@
 package com.ep.storage.domain.service;
 
+import com.ep.annotation.ServiceLog;
 import com.ep.commons.domain.service.IService;
 import com.ep.storage.domain.dao.StocksDao;
 import com.ep.storage.domain.dao.StorageBillDao;
@@ -35,6 +36,7 @@ public class StorageBillService implements IService<StorageBill, String> {
      *
      * @param storageBill
      */
+    @ServiceLog(description = "保存或修改出入单")
     public void saveOrUpdate(StorageBill storageBill) {
         this.storageBillDao.saveOrUpdate(storageBill);
     }
@@ -46,6 +48,7 @@ public class StorageBillService implements IService<StorageBill, String> {
      *
      * @param id
      */
+    @ServiceLog(description = "状态修改")
     public void update(String id, Integer status) {
         this.storageBillDao.updateStatus(id, status);
 
@@ -84,6 +87,7 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param id
      * @return
      */
+    @ServiceLog(description = "获取单个单据")
     public StorageBill get(String id) {
         return storageBillDao.get(id);
     }
@@ -103,6 +107,7 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param rows
      * @return
      */
+    @ServiceLog(description = "获取出入单分页")
     public List<StorageBill> getList(List<String> organId, List<Integer> status, StorageBill.Direction direction, Integer startIndex, Integer rows){
         return storageBillDao.getAll(organId, status, direction, startIndex, rows);
     }
@@ -134,6 +139,7 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param storageSn
      * @return
      */
+    @ServiceLog(description = "条件获取出入单")
     public List<StorageBill> getListBy(List<String> organId, List<String> creatorId, StorageBill.Direction direction, List<Integer> status, List<String> storageSn){
         return storageBillDao.getListBy(organId, creatorId, direction, status, storageSn);
     }
@@ -148,6 +154,7 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param storageSn
      * @return
      */
+    @ServiceLog(description = "条件获取出入单数量")
     public Integer getListSizeBy(List<String> organId, List<String> creatorId, StorageBill.Direction direction, List<Integer> status, List<String> storageSn) {
         return storageBillDao.getCountBy(organId, creatorId, direction, status, storageSn);
     }
@@ -159,6 +166,7 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param ownerSn
      * @return
      */
+    @ServiceLog(description = "获取单据下所有分录")
     public List<StorageBillEntry> getEntryList(List<Integer> status, List<String> ownerSn){
         return storageBillEntryDao.getAll(status, ownerSn);
     }
@@ -170,6 +178,7 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param ownerSn
      * @return
      */
+    @ServiceLog(description = "获取单据下分录数量")
     public Integer getEntryCount(List<Integer> status, List<String> ownerSn){
         return storageBillEntryDao.getCount(status, ownerSn);
     }
@@ -183,6 +192,7 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param ownerSn
      * @return
      */
+    @ServiceLog(description = "条件获取分录")
     public List<StorageBillEntry> getEntryListBy(List<String> goodsId, List<String> goodsName, List<Integer> status, List<String> ownerSn){
         return storageBillEntryDao.getListBy(goodsId, goodsName, status, ownerSn);
     }
@@ -196,6 +206,7 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param ownerSn
      * @return
      */
+    @ServiceLog(description = "条件获取分录数量")
     public Integer getEntryCountBy(List<String> goodsId, List<String> goodsName, List<Integer> status, List<String> ownerSn){
         return storageBillEntryDao.getCountBy(goodsId, goodsName, status, ownerSn);
     }
@@ -205,6 +216,7 @@ public class StorageBillService implements IService<StorageBill, String> {
      *
      * @param storageBillEntry
      */
+    @ServiceLog(description = "保存或者修改出入单分录")
     public void saveOrUpdateEntry(StorageBillEntry storageBillEntry){
         storageBillEntryDao.saveOrUpdate(storageBillEntry);
 

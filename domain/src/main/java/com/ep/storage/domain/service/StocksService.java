@@ -1,5 +1,6 @@
 package com.ep.storage.domain.service;
 
+import com.ep.annotation.ServiceLog;
 import com.ep.storage.domain.dao.StocksDao;
 import com.ep.storage.domain.model.Stocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public class StocksService {
      * @param rows
      * @return
      */
+    @ServiceLog(description = "获取库存分页")
     public List<Stocks> getList(List<String> organId, List<Integer> status, Integer startIndex, Integer rows){
         return stocksDao.getAll(organId, status, startIndex, rows);
     }
@@ -33,6 +35,7 @@ public class StocksService {
      * @param status
      * @return
      */
+    @ServiceLog(description = "获取库存数量")
     public Integer getCount(List<String> organId, List<Integer> status){
         return stocksDao.getCount(organId, status);
     }
@@ -50,6 +53,7 @@ public class StocksService {
      * @param function
      * @return
      */
+    @ServiceLog(description = "条件获取库存")
     public List<Stocks> getListBy(List<String> ownerId, List<String> organId, List<Integer> status, List<String> goodsId, List<String> goodsName, Date beginTime, Date endTime, StocksDao.Function function){
         if (function.equals(StocksDao.Function.Info)){
             return stocksDao.getStocksInfo(ownerId, organId, status, goodsId, goodsName);
@@ -72,8 +76,10 @@ public class StocksService {
      * @param goodsName
      * @param beginTime
      * @param endTime
+     * @param function
      * @return
      */
+    @ServiceLog(description = "条件获取库存数量")
     public Integer getCountBy(List<String> ownerId, List<String> organId, List<Integer> status, List<String> goodsId, List<String> goodsName, Date beginTime, Date endTime, StocksDao.Function function){
         if (function.equals(StocksDao.Function.Record)){
             return stocksDao.getListCount(ownerId, organId, status, goodsId, goodsName, beginTime, endTime);
@@ -90,6 +96,7 @@ public class StocksService {
      * @param id
      * @return
      */
+    @ServiceLog(description = "查找单个库存")
     public Stocks getOne(String id){
         return stocksDao.get(id);
     }
@@ -99,6 +106,7 @@ public class StocksService {
      *
      * @param stocks
      */
+    @ServiceLog(description = "保存或修改库存")
     public void saveOrUpdate(Stocks stocks){
         stocksDao.saveOrUpdate(stocks);
     }
@@ -109,6 +117,7 @@ public class StocksService {
      * @param id
      * @param status
      */
+    @ServiceLog(description = "状态修改")
     public void updateStatus(String id, Integer status){
         stocksDao.updateStatus(id, status);
     }
