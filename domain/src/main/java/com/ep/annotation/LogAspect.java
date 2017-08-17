@@ -1,10 +1,12 @@
 package com.ep.annotation;
 
+import com.ep.commons.domain.dao.LogDao;
+import com.ep.commons.domain.model.Log;
+import com.ep.commons.domain.model.Organ;
 import com.ep.commons.domain.model.User;
-import com.ep.commons.domain.service.LogService;
+import com.ep.commons.domain.model.UserOrgan;
 import com.ep.commons.domain.service.UserService;
 import com.ep.commons.tool.handle.AuthToken;
-import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -16,13 +18,12 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Method;
 
 @Aspect
 @Component
 public class LogAspect {
     @Autowired
-    LogService logService;
+    LogDao logDao;
 
     @Autowired
     UserService userService;
@@ -33,26 +34,39 @@ public class LogAspect {
     public void aspect(){
     }
 
-    @After("aspect()")
-    public void after(JoinPoint joinPoint){
+    @After("aspect() && @annotation(serviceLog)")
+    public void after(ServiceLog serviceLog){
         HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
 
+        Log log = new Log();
         //用户
         User user = null;
+        Organ organ = null;
         Object o = request.getAttribute("authToken");
         if (o != null){
             AuthToken authToken = (AuthToken)o;
             String uId = authToken.getUid();
             if (uId != null) {
                 user = userService.get(uId);
+                if (user != null && user.getUserOrgans() != null){
+                    UserOrgan userOrgans;
+                    for (UserOrgan userOrgan : user.getUserOrgans()) {
+                        userOrgans = userOrgan;
+                        if (userOrgans.getPrimary()) {
+                            organ = userOrgans.getOrgan();
+                        }
+                    }
+                }
             }
         }
 
         try {
-            String description = getServiceDescription(joinPoint);
+            log.setContext(serviceLog.description());
+            log.setCreator(user);
+            log.setOrgan(organ);
+            logDao.save(log);
             System.out.println("==================================后置通知=============================================");
-            System.out.println(description);
-            logService.save(description, user);
+            System.out.println(serviceLog.description());
         } catch (Exception e){
             logger.error("异常信息:{}", e.getMessage());
         }
@@ -96,20 +110,4 @@ public class LogAspect {
             logger.error("异常信息:{}", ex.getMessage());
         }
     }*/
-
-    private static String getServiceDescription(JoinPoint joinPoint)
-            throws Exception {
-        String targetName = joinPoint.getTarget().getClass().getName();
-        String methodName = joinPoint.getSignature().getName();
-        Class targetClass = Class.forName(targetName);
-        Method[] methods = targetClass.getMethods();
-        String description = "";
-        for (Method method : methods) {
-            if (method.getName().equals(methodName)) {
-                description = method.getAnnotation(ServiceLog.class).description();
-                break;
-            }
-        }
-        return description;
-    }
 }
