@@ -10,7 +10,6 @@ import com.ep.storage.domain.model.StorageBill;
 import com.ep.storage.domain.model.StorageBillEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.List;
  * Created by ly on 17-8-5
  */
 @Service
-@Transactional
 public class StorageBillService implements IService<StorageBill, String> {
 
     @Autowired
@@ -89,7 +87,6 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param id
      * @return
      */
-    @ServiceLog(description = "获取单个单据")
     public StorageBill get(String id) {
         return storageBillDao.get(id);
     }
@@ -109,7 +106,6 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param rows
      * @return
      */
-    @ServiceLog(description = "获取出入单分页")
     public List<StorageBill> getList(List<String> organId, List<Integer> status, StorageBill.Direction direction, Integer startIndex, Integer rows){
         return storageBillDao.getAll(organId, status, direction, startIndex, rows);
     }
@@ -141,7 +137,6 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param storageSn
      * @return
      */
-    @ServiceLog(description = "条件获取出入单")
     public List<StorageBill> getListBy(List<String> organId, List<String> creatorId, StorageBill.Direction direction, List<Integer> status, List<String> storageSn){
         return storageBillDao.getListBy(organId, creatorId, direction, status, storageSn);
     }
@@ -156,7 +151,6 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param storageSn
      * @return
      */
-    @ServiceLog(description = "条件获取出入单数量")
     public Integer getListSizeBy(List<String> organId, List<String> creatorId, StorageBill.Direction direction, List<Integer> status, List<String> storageSn) {
         return storageBillDao.getCountBy(organId, creatorId, direction, status, storageSn);
     }
@@ -168,7 +162,6 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param ownerSn
      * @return
      */
-    @ServiceLog(description = "获取单据下所有分录")
     public List<StorageBillEntry> getEntryList(List<Integer> status, List<String> ownerSn){
         return storageBillEntryDao.getAll(status, ownerSn);
     }
@@ -180,7 +173,6 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param ownerSn
      * @return
      */
-    @ServiceLog(description = "获取单据下分录数量")
     public Integer getEntryCount(List<Integer> status, List<String> ownerSn){
         return storageBillEntryDao.getCount(status, ownerSn);
     }
@@ -194,7 +186,6 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param ownerSn
      * @return
      */
-    @ServiceLog(description = "条件获取分录")
     public List<StorageBillEntry> getEntryListBy(List<String> goodsId, List<String> goodsName, List<Integer> status, List<String> ownerSn){
         return storageBillEntryDao.getListBy(goodsId, goodsName, status, ownerSn);
     }
@@ -208,7 +199,6 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param ownerSn
      * @return
      */
-    @ServiceLog(description = "条件获取分录数量")
     public Integer getEntryCountBy(List<String> goodsId, List<String> goodsName, List<Integer> status, List<String> ownerSn){
         return storageBillEntryDao.getCountBy(goodsId, goodsName, status, ownerSn);
     }

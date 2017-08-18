@@ -1,10 +1,9 @@
 package com.ep.annotation;
 
-import com.ep.commons.domain.dao.LogDao;
-import com.ep.commons.domain.model.Log;
 import com.ep.commons.domain.model.Organ;
 import com.ep.commons.domain.model.User;
 import com.ep.commons.domain.model.UserOrgan;
+import com.ep.commons.domain.service.LogService;
 import com.ep.commons.domain.service.UserService;
 import com.ep.commons.tool.handle.AuthToken;
 import org.aspectj.lang.annotation.After;
@@ -23,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 @Component
 public class LogAspect {
     @Autowired
-    LogDao logDao;
+    LogService logService;
 
     @Autowired
     UserService userService;
@@ -37,8 +36,6 @@ public class LogAspect {
     @After("aspect() && @annotation(serviceLog)")
     public void after(ServiceLog serviceLog){
         HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
-
-        Log log = new Log();
         //用户
         User user = null;
         Organ organ = null;
@@ -61,10 +58,7 @@ public class LogAspect {
         }
 
         try {
-            log.setContext(serviceLog.description());
-            log.setCreator(user);
-            log.setOrgan(organ);
-            logDao.save(log);
+            logService.save(serviceLog.description(), user, organ);
             System.out.println("==================================后置通知=============================================");
             System.out.println(serviceLog.description());
         } catch (Exception e){

@@ -6,13 +6,11 @@ import com.ep.storage.domain.dao.*;
 import com.ep.storage.domain.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional
 public class PurchaseBillService {
     @Autowired
     private PurchaseBillDao purchaseBillDao;
@@ -41,7 +39,6 @@ public class PurchaseBillService {
      * @param rows
      * @return
      */
-    @ServiceLog(description = "查询采购单(分页)")
     public List<PurchaseBill> getPurchase(List<String> organId, List<Integer> status, Integer startIndex, Integer rows){
         return purchaseBillDao.getPurchase(organId,  status, startIndex, rows);
     }
@@ -53,7 +50,6 @@ public class PurchaseBillService {
      * @param status
      * @return
      */
-    @ServiceLog(description = "查询采购单数量")
     public Integer getPurchaseCount(List<String> organId, List<Integer> status){
         return purchaseBillDao.getPurchaseCount(organId, status);
     }
@@ -67,7 +63,6 @@ public class PurchaseBillService {
      * @param purchaseSn
      * @return
      */
-    @ServiceLog(description = "条件查询采购单")
     public List<PurchaseBill> getPurchaseBy(List<String> organId, List<String> creatorId, List<Integer> status, List<String> purchaseSn){
         return purchaseBillDao.getPurchaseBy(organId, creatorId, status, purchaseSn);
     }
@@ -81,7 +76,6 @@ public class PurchaseBillService {
      * @param purchaseSn
      * @return
      */
-    @ServiceLog(description = "条件查询采购单数量")
     public Integer getCountBy(List<String> organId, List<String> creatorId, List<Integer> status, List<String> purchaseSn) {
         return purchaseBillDao.getCountBy(organId, creatorId, status, purchaseSn);
     }
@@ -92,7 +86,6 @@ public class PurchaseBillService {
      * @param status
      * @param purchaseSn
      */
-    @ServiceLog(description = "获取单据下所有分录")
     public List<PurchaseBillEntry> getEntryAll(List<Integer> status, List<String> purchaseSn){
         List<PurchaseBillEntry> list = purchaseBillEntryDao.getAll(status, purchaseSn);
         return list;
@@ -104,7 +97,6 @@ public class PurchaseBillService {
      * @param status
      * @param purchaseSn
      */
-    @ServiceLog(description = "获取单据下所有分录数量")
     public Integer getEntryCount(List<Integer> status, List<String> purchaseSn){
         return purchaseBillEntryDao.getCount(status, purchaseSn);
     }
@@ -117,7 +109,6 @@ public class PurchaseBillService {
      * @param status
      * @param purchaseSn
      */
-    @ServiceLog(description = "条件获取分录")
     public List<PurchaseBillEntry> getEntryBy(List<String> goodsId, List<String> goodsName, List<Integer> status, List<String> purchaseSn){
         List<PurchaseBillEntry> list = purchaseBillEntryDao.getEntryBy(goodsId, goodsName, status, purchaseSn);
         return list;
@@ -131,7 +122,6 @@ public class PurchaseBillService {
      * @param status
      * @param purchaseSn
      */
-    @ServiceLog(description = "条件获取分录数量")
     public Integer getEntryByCount(List<String> goodsId, List<String> goodsName, List<Integer> status, List<String> purchaseSn){
         return purchaseBillEntryDao.getEntryByCount(goodsId, goodsName, status, purchaseSn);
     }
@@ -162,7 +152,6 @@ public class PurchaseBillService {
      * @param id
      * @return
      */
-    @ServiceLog(description = "查找单个采购单")
     public PurchaseBill getOne(String id) {
         return purchaseBillDao.get(id);
     }

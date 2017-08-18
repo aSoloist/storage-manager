@@ -5,13 +5,11 @@ import com.ep.storage.domain.dao.StocksDao;
 import com.ep.storage.domain.model.Stocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 
 @Service
-@Transactional
 public class StocksService {
     @Autowired
     StocksDao stocksDao;
@@ -25,7 +23,6 @@ public class StocksService {
      * @param rows
      * @return
      */
-    @ServiceLog(description = "获取库存分页")
     public List<Stocks> getList(List<String> organId, List<Integer> status, Integer startIndex, Integer rows){
         return stocksDao.getAll(organId, status, startIndex, rows);
     }
@@ -37,7 +34,6 @@ public class StocksService {
      * @param status
      * @return
      */
-    @ServiceLog(description = "获取库存数量")
     public Integer getCount(List<String> organId, List<Integer> status){
         return stocksDao.getCount(organId, status);
     }
@@ -55,7 +51,6 @@ public class StocksService {
      * @param function
      * @return
      */
-    @ServiceLog(description = "条件获取库存")
     public List<Stocks> getListBy(List<String> ownerId, List<String> organId, List<Integer> status, List<String> goodsId, List<String> goodsName, Date beginTime, Date endTime, StocksDao.Function function){
         if (function.equals(StocksDao.Function.Info)){
             return stocksDao.getStocksInfo(ownerId, organId, status, goodsId, goodsName);
@@ -81,7 +76,6 @@ public class StocksService {
      * @param function
      * @return
      */
-    @ServiceLog(description = "条件获取库存数量")
     public Integer getCountBy(List<String> ownerId, List<String> organId, List<Integer> status, List<String> goodsId, List<String> goodsName, Date beginTime, Date endTime, StocksDao.Function function){
         if (function.equals(StocksDao.Function.Record)){
             return stocksDao.getListCount(ownerId, organId, status, goodsId, goodsName, beginTime, endTime);
@@ -98,7 +92,6 @@ public class StocksService {
      * @param id
      * @return
      */
-    @ServiceLog(description = "查找单个库存")
     public Stocks getOne(String id){
         return stocksDao.get(id);
     }
