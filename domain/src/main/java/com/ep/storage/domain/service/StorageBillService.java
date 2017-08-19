@@ -37,11 +37,16 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param storageBill
      */
     @SaveLog(message = "保存或修改出入单")
-    public void saveOrUpdate(StorageBill storageBill) {
+    public StorageBill saveOrUpdate(StorageBill storageBill) {
         this.storageBillDao.saveOrUpdate(storageBill);
+        return storageBill;
     }
 
-    public void delete(String s) { }
+    @SaveLog(message = "删除出入单", clazz = StorageBill.class)
+    public String delete(String id) {
+        stocksDao.updateStatus(id, -1);
+        return id;
+    }
 
     /**
      * 状态修改
@@ -49,11 +54,12 @@ public class StorageBillService implements IService<StorageBill, String> {
      * @param id
      */
     @SaveLog(message = "出入单状态修改")
-    public void update(String id, Integer status) {
+    public StorageBill update(String id, Integer status) {
         this.storageBillDao.updateStatus(id, status);
+        StorageBill storageBill = storageBillDao.get(id);
 
         if (status == 1){
-            StorageBill storageBill = storageBillDao.get(id);
+
             List<String> sn = new ArrayList<>();
             sn.add(storageBill.getSn());
             List<StorageBillEntry> list = storageBillEntryDao.getListBy(null, null, null, sn);
@@ -79,6 +85,7 @@ public class StorageBillService implements IService<StorageBill, String> {
                 }
             }
         }
+        return storageBill;
     }
 
     /**
@@ -204,12 +211,12 @@ public class StorageBillService implements IService<StorageBill, String> {
     }
 
     /**
-     * 保存或者修改出入单分录
+     * 保存出入单分录
      *
      * @param storageBillEntry
      */
-    @SaveLog(message = "保存或者修改出入单分录")
-    public void saveOrUpdateEntry(StorageBillEntry storageBillEntry){
+    @SaveLog(message = "保存出入单分录")
+    public StorageBillEntry saveEntry(StorageBillEntry storageBillEntry){
         storageBillEntryDao.saveOrUpdate(storageBillEntry);
 
         StorageBill storageBill = storageBillDao.get(storageBillEntry.getOwnerId());
@@ -221,5 +228,6 @@ public class StorageBillService implements IService<StorageBill, String> {
             stocks.setFrozenQuantity(storageBillEntry.getQuantity());
             stocksDao.saveOrUpdate(stocks);
         }
+        return storageBillEntry;
     }
 }

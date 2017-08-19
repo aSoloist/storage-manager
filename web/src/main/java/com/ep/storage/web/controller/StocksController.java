@@ -148,7 +148,7 @@ public class StocksController extends BaseController{
      */
     @RequestMapping(value = "/getOne", method = RequestMethod.GET)
     public Stocks getOne(@RequestParam(required = true)String id){
-        return stocksService.getOne(id);
+        return stocksService.get(id);
     }
 
     /**
@@ -157,10 +157,14 @@ public class StocksController extends BaseController{
      * @param stocks
      */
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
-    public void saveOrUpdate(@RequestBody Stocks stocks){
-        stocks.setOwner(this.currentUser);
-        stocks.setOrgan(this.primaryOrgan);
-        stocksService.saveOrUpdate(stocks);
+    public Stocks saveOrUpdate(@RequestBody Stocks stocks){
+        if (stocks.getOwner() == null) {
+            stocks.setOwner(this.currentUser);
+        }
+        if (stocks.getOrgan() == null) {
+            stocks.setOrgan(this.primaryOrgan);
+        }
+        return stocksService.saveOrUpdate(stocks);
     }
 
     /**
@@ -172,6 +176,10 @@ public class StocksController extends BaseController{
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public void updateStatus(@RequestParam String id,
                              @RequestParam Integer status) {
-        stocksService.updateStatus(id, status);
+        if (status == -1) {
+            stocksService.delete(id);
+        } else {
+            stocksService.updateStatus(id, status);
+        }
     }
 }

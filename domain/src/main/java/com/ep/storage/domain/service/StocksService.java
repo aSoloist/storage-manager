@@ -1,5 +1,6 @@
 package com.ep.storage.domain.service;
 
+import com.ep.commons.domain.service.IService;
 import com.ep.commons.tool.annotation.SaveLog;
 import com.ep.storage.domain.dao.StocksDao;
 import com.ep.storage.domain.model.Stocks;
@@ -10,7 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class StocksService {
+public class StocksService implements IService<Stocks, String> {
     @Autowired
     StocksDao stocksDao;
 
@@ -92,7 +93,7 @@ public class StocksService {
      * @param id
      * @return
      */
-    public Stocks getOne(String id){
+    public Stocks get(String id){
         return stocksDao.get(id);
     }
 
@@ -102,8 +103,31 @@ public class StocksService {
      * @param stocks
      */
     @SaveLog(message = "保存或修改库存")
-    public void saveOrUpdate(Stocks stocks){
+    public Stocks saveOrUpdate(Stocks stocks){
         stocksDao.saveOrUpdate(stocks);
+        return stocks;
+    }
+
+    /**
+     * 删除库存
+     *
+     * @param id
+     * @return
+     */
+    @SaveLog(message = "删除库存", clazz = Stocks.class)
+    public String delete(String id) {
+        stocksDao.updateStatus(id, -1);
+        return id;
+    }
+
+    @Override
+    public List<Stocks> list(String s, List<String> list, List<String> list1, List<Integer> list2, Integer integer, Integer integer1) {
+        return null;
+    }
+
+    @Override
+    public long listSize(String s, List<String> list, List<String> list1, List<Integer> list2) {
+        return 0;
     }
 
     /**
@@ -113,7 +137,8 @@ public class StocksService {
      * @param status
      */
     @SaveLog(message = "库存状态修改")
-    public void updateStatus(String id, Integer status){
+    public Stocks updateStatus(String id, Integer status){
         stocksDao.updateStatus(id, status);
+        return stocksDao.get(id);
     }
 }

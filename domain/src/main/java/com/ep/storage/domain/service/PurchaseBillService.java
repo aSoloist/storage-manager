@@ -1,6 +1,7 @@
 package com.ep.storage.domain.service;
 
 import com.ep.commons.domain.dao.SNDao;
+import com.ep.commons.domain.service.IService;
 import com.ep.commons.tool.annotation.SaveLog;
 import com.ep.storage.domain.dao.*;
 import com.ep.storage.domain.model.*;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class PurchaseBillService {
+public class PurchaseBillService implements IService<PurchaseBill, String> {
     @Autowired
     private PurchaseBillDao purchaseBillDao;
 
@@ -132,8 +133,28 @@ public class PurchaseBillService {
      * @param purchase
      */
     @SaveLog(message = "新增或者修改采购单")
-    public void saveOrUpdate(PurchaseBill purchase) {
+    public PurchaseBill saveOrUpdate(PurchaseBill purchase) {
         this.purchaseBillDao.saveOrUpdate(purchase);
+        return purchase;
+    }
+
+    @SaveLog(
+            message = "删除采购单",
+            clazz = PurchaseBill.class
+    )
+    public String delete(String id) {
+        purchaseBillDao.updateStatus(id, -1);
+        return id;
+    }
+
+    @Override
+    public List<PurchaseBill> list(String s, List<String> list, List<String> list1, List<Integer> list2, Integer integer, Integer integer1) {
+        return null;
+    }
+
+    @Override
+    public long listSize(String s, List<String> list, List<String> list1, List<Integer> list2) {
+        return 0;
     }
 
     /**
@@ -142,8 +163,9 @@ public class PurchaseBillService {
      * @param purchaseBillEntry
      */
     @SaveLog(message = "新增或者修改分录")
-    public void saveOrUpdateEntry(PurchaseBillEntry purchaseBillEntry) {
+    public PurchaseBillEntry saveOrUpdateEntry(PurchaseBillEntry purchaseBillEntry) {
         this.purchaseBillEntryDao.saveOrUpdate(purchaseBillEntry);
+        return purchaseBillEntry;
     }
 
     /**
@@ -152,7 +174,7 @@ public class PurchaseBillService {
      * @param id
      * @return
      */
-    public PurchaseBill getOne(String id) {
+    public PurchaseBill get(String id) {
         return purchaseBillDao.get(id);
     }
 
@@ -163,12 +185,13 @@ public class PurchaseBillService {
      * @param status   -1 删除；0 暂存； 1 待采购； 2 已采购  状态为2时自动生成入库单
      */
     @SaveLog(message = "采购单状态修改")
-    public void updateStatus(String id, Integer status) {
+    public PurchaseBill updateStatus(String id, Integer status) {
 
         purchaseBillDao.updateStatus(id, status);
+        PurchaseBill purchase = purchaseBillDao.get(id);
 
         if (status == 1) {
-            PurchaseBill purchase = purchaseBillDao.get(id);
+
             List<String> sn = new ArrayList<>();
             sn.add(purchase.getSn());
             List<PurchaseBillEntry> list = purchaseBillEntryDao.getEntryBy(null, null, null, sn);
@@ -183,16 +206,15 @@ public class PurchaseBillService {
         }
 
         if (status == 2){
-            PurchaseBill purchaseBill = purchaseBillDao.get(id);
             List<String> sn = new ArrayList<>();
-            sn.add(purchaseBill.getSn());
+            sn.add(purchase.getSn());
             List<PurchaseBillEntry> list = purchaseBillEntryDao.getEntryBy(null, null, null, sn);
             StorageBill storageBill = new StorageBill();
             storageBill.setDirection(StorageBill.Direction.IN);
-            storageBill.setCreator(purchaseBill.getCreator());
-            storageBill.setOrgan(purchaseBill.getOrgan());
-            storageBill.setSn(snDao.gen("RKD", purchaseBill.getOrganId()));
-            storageBill.setPurchaseBill(purchaseBill);
+            storageBill.setCreator(purchase.getCreator());
+            storageBill.setOrgan(purchase.getOrgan());
+            storageBill.setSn(snDao.gen("RKD", purchase.getOrganId()));
+            storageBill.setPurchaseBill(purchase);
             storageBillDao.saveOrUpdate(storageBill);
             for (PurchaseBillEntry p : list){
                 StorageBillEntry storageBillEntry = new StorageBillEntry();
@@ -202,5 +224,6 @@ public class PurchaseBillService {
                 storageBillEntryDao.saveOrUpdate(storageBillEntry);
             }
         }
+        return purchase;
     }
 }

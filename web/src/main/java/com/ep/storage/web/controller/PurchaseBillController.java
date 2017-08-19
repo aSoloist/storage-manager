@@ -153,7 +153,7 @@ public class PurchaseBillController extends BaseController {
      */
     @RequestMapping(value = "/getOne", method = RequestMethod.GET)
     public PurchaseBill getOne(@RequestParam(required = true) String id){
-        return purchaseBillService.getOne(id);
+        return purchaseBillService.get(id);
     }
 
     /**
@@ -162,11 +162,17 @@ public class PurchaseBillController extends BaseController {
      * @param purchaseBill
      */
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
-    public void saveOrUpdate(@RequestBody PurchaseBill purchaseBill) {
-        purchaseBill.setSn(snSerice.gen("CGD", this.primaryOrganId));
-        purchaseBill.setCreator(this.currentUser);
-        purchaseBill.setOrgan(this.primaryOrgan);
-        purchaseBillService.saveOrUpdate(purchaseBill);
+    public PurchaseBill saveOrUpdate(@RequestBody PurchaseBill purchaseBill) {
+        if (purchaseBill.getSn() == null){
+            purchaseBill.setSn(snSerice.gen("CGD", this.primaryOrganId));
+        }
+        if (purchaseBill.getCreator() == null) {
+            purchaseBill.setCreator(this.currentUser);
+        }
+        if (purchaseBill.getOrgan() == null) {
+            purchaseBill.setOrgan(this.primaryOrgan);
+        }
+        return purchaseBillService.saveOrUpdate(purchaseBill);
     }
 
     /**
@@ -175,8 +181,8 @@ public class PurchaseBillController extends BaseController {
      * @param purchaseBillEntry
      */
     @RequestMapping(value = "/saveEntry", method = RequestMethod.POST)
-    public void saveEntry(@RequestBody PurchaseBillEntry purchaseBillEntry){
-        purchaseBillService.saveOrUpdateEntry(purchaseBillEntry);
+    public PurchaseBillEntry saveEntry(@RequestBody PurchaseBillEntry purchaseBillEntry){
+        return purchaseBillService.saveOrUpdateEntry(purchaseBillEntry);
     }
 
     /**
@@ -187,8 +193,12 @@ public class PurchaseBillController extends BaseController {
      */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public void updateStatus(@RequestParam String id,
-                             @RequestParam Integer status) {
-        purchaseBillService.updateStatus(id, status);
+                                     @RequestParam Integer status) {
+        if (status == -1){
+            purchaseBillService.delete(id);
+        } else {
+            purchaseBillService.updateStatus(id, status);
+        }
     }
 }
 

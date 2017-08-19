@@ -192,11 +192,17 @@ public class StorageBillController extends BaseController{
      * @param storageBill
      */
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
-    public void saveOrUpdate(@RequestBody StorageBill storageBill) {
-        storageBill.setSn(snSerice.gen("RKD", this.primaryOrganId));
-        storageBill.setCreator(this.currentUser);
-        storageBill.setOrgan(this.primaryOrgan);
-        storageBillService.saveOrUpdate(storageBill);
+    public StorageBill saveOrUpdate(@RequestBody StorageBill storageBill) {
+        if (storageBill.getSn() == null) {
+            storageBill.setSn(snSerice.gen("RKD", this.primaryOrganId));
+        }
+        if (storageBill.getCreator() == null) {
+            storageBill.setCreator(this.currentUser);
+        }
+        if (storageBill.getOrgan() == null) {
+            storageBill.setOrgan(this.primaryOrgan);
+        }
+        return storageBillService.saveOrUpdate(storageBill);
     }
 
     /**
@@ -205,8 +211,8 @@ public class StorageBillController extends BaseController{
      * @param storageBillEntry
      */
     @RequestMapping(value = "/saveEntry", method = RequestMethod.POST)
-    public void saveEntry(@RequestBody StorageBillEntry storageBillEntry){
-        storageBillService.saveOrUpdateEntry(storageBillEntry);
+    public StorageBillEntry saveEntry(@RequestBody StorageBillEntry storageBillEntry){
+        return storageBillService.saveEntry(storageBillEntry);
     }
 
     /**
@@ -217,6 +223,10 @@ public class StorageBillController extends BaseController{
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public void updateStatus(@RequestParam String id,
                              @RequestParam Integer status) {
-        storageBillService.update(id, status);
+        if (status == -1) {
+            storageBillService.delete(id);
+        } else {
+            storageBillService.update(id, status);
+        }
     }
 }
