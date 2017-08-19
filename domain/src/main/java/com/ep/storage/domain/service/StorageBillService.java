@@ -1,7 +1,7 @@
 package com.ep.storage.domain.service;
 
-import com.ep.annotation.ServiceLog;
 import com.ep.commons.domain.service.IService;
+import com.ep.commons.tool.annotation.SaveLog;
 import com.ep.storage.domain.dao.StocksDao;
 import com.ep.storage.domain.dao.StorageBillDao;
 import com.ep.storage.domain.dao.StorageBillEntryDao;
@@ -36,7 +36,7 @@ public class StorageBillService implements IService<StorageBill, String> {
      *
      * @param storageBill
      */
-    @ServiceLog(description = "保存或修改出入单")
+    @SaveLog(message = "保存或修改出入单")
     public void saveOrUpdate(StorageBill storageBill) {
         this.storageBillDao.saveOrUpdate(storageBill);
     }
@@ -48,7 +48,7 @@ public class StorageBillService implements IService<StorageBill, String> {
      *
      * @param id
      */
-    @ServiceLog(description = "状态修改")
+    @SaveLog(message = "出入单状态修改")
     public void update(String id, Integer status) {
         this.storageBillDao.updateStatus(id, status);
 
@@ -208,7 +208,7 @@ public class StorageBillService implements IService<StorageBill, String> {
      *
      * @param storageBillEntry
      */
-    @ServiceLog(description = "保存或者修改出入单分录")
+    @SaveLog(message = "保存或者修改出入单分录")
     public void saveOrUpdateEntry(StorageBillEntry storageBillEntry){
         storageBillEntryDao.saveOrUpdate(storageBillEntry);
 

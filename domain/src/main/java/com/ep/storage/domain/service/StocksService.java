@@ -1,6 +1,6 @@
 package com.ep.storage.domain.service;
 
-import com.ep.annotation.ServiceLog;
+import com.ep.commons.tool.annotation.SaveLog;
 import com.ep.storage.domain.dao.StocksDao;
 import com.ep.storage.domain.model.Stocks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +101,7 @@ public class StocksService {
      *
      * @param stocks
      */
-    @ServiceLog(description = "保存或修改库存")
+    @SaveLog(message = "保存或修改库存")
     public void saveOrUpdate(Stocks stocks){
         stocksDao.saveOrUpdate(stocks);
     }
@@ -112,7 +112,7 @@ public class StocksService {
      * @param id
      * @param status
      */
-    @ServiceLog(description = "状态修改")
+    @SaveLog(message = "库存状态修改")
     public void updateStatus(String id, Integer status){
         stocksDao.updateStatus(id, status);
     }
