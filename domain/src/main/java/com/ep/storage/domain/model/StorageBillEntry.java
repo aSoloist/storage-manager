@@ -62,4 +62,8 @@ public class StorageBillEntry extends AbstractBillEntry {
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
+
+    public String toString(){
+        return "所属单号：" + this.ownerSn;
+    }
 }

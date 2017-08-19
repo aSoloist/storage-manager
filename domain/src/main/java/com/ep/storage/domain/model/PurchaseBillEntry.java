@@ -75,4 +75,8 @@ public class PurchaseBillEntry extends AbstractBillEntry {
     public void setPurchaseId(String purchaseId) {
         this.purchaseId = purchaseId;
     }
+
+    public String toString(){
+        return "所属单号：" + this.sn;
+    }
 }

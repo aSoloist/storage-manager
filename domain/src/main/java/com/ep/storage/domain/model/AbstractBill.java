@@ -162,4 +162,8 @@ public class AbstractBill extends AbstractVersionModel {
     public void setOrganName(String organName) {
         this.organName = organName;
     }
+
+    public String toString(){
+        return "单号：" + this.sn;
+    }
 }
