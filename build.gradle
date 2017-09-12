@@ -169,11 +169,11 @@ subprojects {
 
 
 
-        compile 'com.ep.commons:commons-domain:2.0.10'
+        compile 'com.ep.commons:commons-domain:2.1.0'
 
-        compile 'com.ep.commons:commons-tool:2.0.10'
+        compile 'com.ep.commons:commons-tool:2.1.0'
 
-        compile 'com.ep.commons:commons-web:2.0.10'
+        compile 'com.ep.commons:commons-web:2.1.0'
 
 
 
