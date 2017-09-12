@@ -205,7 +205,7 @@
 
                     <map>
 
-                        <entry key="com.moyuer.bsf.common.web.exception"
+                        <entry key="com.ep.commons.tool.exception.Unauthorized"
 
                                value="401, error.Unauthorized"/>
 
