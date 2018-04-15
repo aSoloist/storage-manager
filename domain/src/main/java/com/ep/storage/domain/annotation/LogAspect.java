@@ -1,4 +1,4 @@
-package com.ep.annotation;
+package com.ep.storage.domain.annotation;
 
 import com.ep.commons.domain.model.Organ;
 import com.ep.commons.domain.model.User;
@@ -29,13 +29,14 @@ public class LogAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(LogAspect.class);
 
-    @Pointcut("@annotation(com.ep.annotation.ServiceLog)")
+    @Pointcut("@annotation(com.ep.storage.domain.annotation.ServiceLog)")
     public void aspect(){
     }
 
     @After("aspect() && @annotation(serviceLog)")
     public void after(ServiceLog serviceLog){
         HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+        String addr = request.getRemoteAddr();
         //用户
         User user = null;
         Organ organ = null;
@@ -58,7 +59,7 @@ public class LogAspect {
         }
 
         try {
-            logService.save(serviceLog.description(), user, organ);
+            logService.save(serviceLog.description(), user, organ, addr);
             System.out.println("==================================后置通知=============================================");
             System.out.println(serviceLog.description());
         } catch (Exception e){

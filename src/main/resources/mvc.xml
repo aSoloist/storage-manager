@@ -17,7 +17,7 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
 
-    <context:annotation-config></context:annotation-config>
+    <context:annotation-config/>
 
 
     <!-- 扫描ep-commons -->
@@ -72,7 +72,7 @@
 
           class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
 
-        <property name="features" ref="serializerFeature"></property>
+        <property name="features" ref="serializerFeature"/>
 
     </bean>
 
@@ -83,9 +83,9 @@
 
           class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
 
-        <property name="providerClass" value="org.hibernate.validator.HibernateValidator"></property>
+        <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
 
-        <property name="validationMessageSource" ref="messageSource"></property>
+        <property name="validationMessageSource" ref="messageSource"/>
 
     </bean>
 

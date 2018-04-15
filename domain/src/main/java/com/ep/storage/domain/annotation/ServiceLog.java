@@ -1,4 +1,4 @@
-package com.ep.annotation;
+package com.ep.storage.domain.annotation;
 
 import java.lang.annotation.*;
 
