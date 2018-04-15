@@ -1,4 +1,4 @@
-package com.ep.storage.domain.annotation;
+package com.ep.storage.domain.aspect;
 
 import com.ep.commons.domain.model.Organ;
 import com.ep.commons.domain.model.User;
@@ -6,6 +6,7 @@ import com.ep.commons.domain.model.UserOrgan;
 import com.ep.commons.domain.service.LogService;
 import com.ep.commons.domain.service.UserService;
 import com.ep.commons.tool.handle.AuthToken;
+import com.ep.storage.domain.annotation.ServiceLog;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
